@@ -1,0 +1,27 @@
+{
+  "name": "firebase-9-tutorial",
+  "version": "1.0.0",
+  "description": "# webpack `npm init -y`",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacobjpelletier/firebase-9-tutorial.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jacobjpelletier/firebase-9-tutorial/issues"
+  },
+  "homepage": "https://github.com/jacobjpelletier/firebase-9-tutorial#readme",
+  "devDependencies": {
+    "webpack": "^5.69.1",
+    "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "firebase": "^9.6.7"
+  }
+}
