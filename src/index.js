@@ -1,7 +1,12 @@
 import { initializeApp } from 'firebase/app';
 import {
-    getFirestore, collection, getDocs,
-    addDoc, deleteDoc, doc
+    getFirestore, collection, onSnapshot,
+    addDoc, deleteDoc, doc, query,
+    where,
+    orderBy, serverTimestamp,
+    getDoc, updateDoc
+
+    // add realtime listener
 } from 'firebase/firestore';
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -25,18 +30,21 @@ const db = getFirestore()
 // collection ref
 const collRef = collection(db, 'books')
 
-// get collection data, returns a promise
-getDocs(collRef)
-    .then((snapshot) => {
-        let books = [];
-        snapshot.docs.forEach((doc) => {
-            books.push({ ...doc.data(), id: doc.id})
-        })
-        console.log(books)
+const q1 = query(collRef, where("author", "==", "mr hanky"))
+
+const q2 = query(collRef, where("author", "==", "mr hanky"), orderBy('title', 'asc'))
+
+const q3 = query(collRef, orderBy('createdAt'))
+
+
+// realtime data collection
+onSnapshot(q3, (snapshot) => {
+    let books = [];
+    snapshot.docs.forEach((doc) => {
+        books.push({ ...doc.data(), id: doc.id})
     })
-    .catch(err => {
-        console.log(err.message)
-    })
+    console.log(books)
+})
 
 //adding documents
 // store add form
@@ -49,6 +57,7 @@ addBookForm.addEventListener('submit', (e) => {
     addDoc(collRef, {
         title: addBookForm.title.value,
         author: addBookForm.author.value,
+        createdAt: serverTimestamp()
     })
     .then(() => {
         addBookForm.reset()
@@ -68,4 +77,31 @@ deleteBookForm.addEventListener('submit', (e) => {
         })
 })
 
+// update documents
+const updateForm = document.querySelector('.update');
+updateForm.addEventListener('submit', (e) => {
+    e.preventDefault()
 
+    const docRef = doc(db, 'books', updateForm.id.value);
+    
+    updateDoc(docRef, {
+        title: 'updated title'
+    })
+    .then(() => {
+        updateForm.reset()
+    })
+})
+
+// getting a single document
+const docRef = doc(db, 'books', 'RaKYvyxFkYptcUPOjAIT')
+
+/*
+getDoc(docRef)
+    .then((doc) => {
+        console.log(doc.data(), doc.id)
+    })
+*/
+
+onSnapshot(docRef, (doc) => {
+    console.log(doc.data(), doc.id)
+})
