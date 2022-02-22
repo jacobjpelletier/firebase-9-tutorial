@@ -8,6 +8,11 @@ import {
 
     // add realtime listener
 } from 'firebase/firestore';
+import {
+    getAuth,
+    createUserWithEmailAndPassword
+} from 'firebase/auth'
+
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 // connects front end to firebase backend
@@ -26,6 +31,7 @@ initializeApp(firebaseConfig)
 
 // init services
 const db = getFirestore()
+const auth = getAuth()
 
 // collection ref
 const collRef = collection(db, 'books')
@@ -95,13 +101,24 @@ updateForm.addEventListener('submit', (e) => {
 // getting a single document
 const docRef = doc(db, 'books', 'RaKYvyxFkYptcUPOjAIT')
 
-/*
-getDoc(docRef)
-    .then((doc) => {
-        console.log(doc.data(), doc.id)
-    })
-*/
-
 onSnapshot(docRef, (doc) => {
     console.log(doc.data(), doc.id)
+})
+
+// singing up users
+const signupForm = document.querySelector('.signup')
+signupForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    const email = signupForm.email.value
+    const password = signupForm.password.value
+
+    createUserWithEmailAndPassword(auth, email, password)
+        .then((cred) => {
+            console.log(`user created:`, cred.user)
+        })
+        .catch((err) => {
+            console.log(err.message)
+        })
+
 })
