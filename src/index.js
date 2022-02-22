@@ -10,7 +10,9 @@ import {
 } from 'firebase/firestore';
 import {
     getAuth,
-    createUserWithEmailAndPassword
+    createUserWithEmailAndPassword,
+    signOut, signInWithEmailAndPassword,
+    onAuthStateChanged
 } from 'firebase/auth'
 
 
@@ -121,4 +123,37 @@ signupForm.addEventListener('submit', (e) => {
             console.log(err.message)
         })
 
+})
+
+// login and logout
+const logoutButton = document.querySelector('.logout');
+logoutButton.addEventListener('click', () => {
+    signOut(auth)
+        .then(() => {
+            //console.log('the user signed out');
+        })
+        .catch((err) => {
+            console.log(err.message);
+        })
+})
+
+const loginform = document.querySelector('.login');
+loginform.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const email = loginform.email.value;
+    const password = loginform.password.value;
+
+    signInWithEmailAndPassword(auth, email, password)
+        .then((cred) => {
+            //console.log('user logged in:', cred.user)
+        })
+        .catch((err) => {
+            console.log(err.message)
+        })
+})
+
+//onauthstate change
+onAuthStateChanged(auth, (user) => {
+    console.log('user status changed: ', user)
 })
